@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>安全态势感知平台</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="login/css/reset.css">
+  <link rel="stylesheet" href="login/css/supersized.css">
+  <link rel="stylesheet" href="login/css/style.css">
+  <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+
+</head>
+<body>
+<div class="page-container">
+  <h1>登录</h1>
+  <form method="post">
+    <input type="text" name="username" id="username" class="user" placeholder="用户名" value="admin">
+    <input type="password" name="password" id="password" class="password" placeholder="密码" value="">
+    <button type="button" id="loginButton" >提交</button>
+    </br></br></br>
+    <div id="errorMsg" class="errorMsg"></div>
+  </form>
+</div>
+<!-- Javascript -->
+<!--<script src="assets/js/jquery.min.js"></script>-->
+<script src="login/js/jquery-1.11.3/jquery.min.js"></script>
+<script src="login/js/supersized.3.2.7.min.js"></script>
+<script src="login/js/supersized-init.js"></script>
+<script src="login/js/scripts.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $("#username").focus();
+        $("#username").keydown(function(event) {
+            if ($.trim($("#username").val()) == '') {
+                $("#username").focus();
+            } else {
+                if (event.which == "13") {
+                    $("#password").focus();
+                }
+            }
+        });
+        $("#password").keydown(function(event) {
+            if ($.trim($("#password").val()) == '') {
+                $("#password").focus();
+            } else {
+                if (event.which == "13") {
+                    $("#loginButton").trigger("click");
+                }
+            }
+        });
+        $("#loginButton").click(function () {
+            if ($.trim($("#username").val()) != '' && $.trim($("#password").val()) != '') {
+                var userName = $.trim($("#username").val());
+                var password = $.trim($("#password").val());
+                //  userName = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(userName));
+                // password = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(password));
+                //$("#userName").val(userName);
+                //$("#password").val(password);
+                //密码加密传输
+                // $('#loginForm').submit();
+                $('#errorMsg').html("认证中，请稍等......");
+                $.ajax( {
+                    url: "/login",
+                    type : 'post',
+                    data: {
+                        username : userName,
+                        password : password
+                    },
+                    cache:false,
+                    dataType:'json',
+                    success: function(data){
+                        if(data.success){
+                            $('#errorMsg').html("认证成功，系统加载中......");
+                            window.location.href = "/home.html";
+                        }else{
+                            //window.location.href = "/login.html";
+                            $('#errorMsg').html(data.msg);
+                        }
+                    }
+                });
+
+            } else {
+                $('#errorMsg').html("用户名或密码不允许为空!");
+            }
+        });
+    });
+
+
+</script>
+</body>
+</html>
